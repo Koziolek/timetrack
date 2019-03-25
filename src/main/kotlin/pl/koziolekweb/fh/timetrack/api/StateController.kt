@@ -13,7 +13,7 @@ class StateController(
 ) {
 
     @GetMapping("/usersIn")
-    fun usersIn():Any{
+    fun usersIn():List<CardIn>{
         return ars.cardsIn()
     }
 

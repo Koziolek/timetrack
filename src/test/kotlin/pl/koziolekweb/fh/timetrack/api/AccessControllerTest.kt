@@ -16,9 +16,23 @@ internal class AccessControllerTest(
 
 
     @Test
-    internal fun alwaysOpen() {
-        val forEntity = rst.getForEntity("http://localhost:8080/open/11/11", DoorReaction::class.java)
-        Assertions.assertThat(forEntity.statusCodeValue).isEqualTo(200)
-        Assertions.assertThat(forEntity.body).isEqualTo(DoorReaction("11", DoorAction.OPEN))
+    internal fun enterThenExit() {
+        val openDoor = rst.getForEntity("http://localhost:8080/open/11/11", DoorReaction::class.java)
+        Assertions.assertThat(openDoor.statusCodeValue).isEqualTo(200)
+        Assertions.assertThat(openDoor.body).isEqualTo(DoorReaction("11", DoorAction.OPEN))
+
+        val cardsIn = rst.getForEntity("http://localhost:8080/usersIn", List::class.java)
+        Assertions.assertThat(cardsIn.statusCodeValue).isEqualTo(200)
+        Assertions.assertThat(cardsIn.body).hasSize(1)
+
+        val closeDoor = rst.getForEntity("http://localhost:8080/open/11/11", DoorReaction::class.java)
+        Assertions.assertThat(closeDoor.statusCodeValue).isEqualTo(200)
+        Assertions.assertThat(closeDoor.body).isEqualTo(DoorReaction("11", DoorAction.OPEN))
+
+        val cardsInAfterExit = rst.getForEntity("http://localhost:8080/usersIn", List::class.java)
+        Assertions.assertThat(cardsInAfterExit.statusCodeValue).isEqualTo(200)
+        Assertions.assertThat(cardsInAfterExit.body).hasSize(0)
+
+
     }
 }
