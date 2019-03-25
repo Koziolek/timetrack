@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import pl.koziolekweb.fh.timetrack.accessregistry.AccessRegistryService
+import pl.koziolekweb.fh.timetrack.accessregistry.EventRegister
 
 @RestController
-class UsersIn(
-        @Autowired val ars: AccessRegistryService
+class StateController(
+        @Autowired val ars: AccessRegistryService,
+        @Autowired val er: EventRegister
 ) {
 
     @GetMapping("/usersIn")
@@ -18,5 +20,12 @@ class UsersIn(
     @GetMapping("/usersOut")
     fun usersOut():Any{
         return ars.cardsOut()
+    }
+
+    @GetMapping("/events")
+    fun events():Any{
+        return er.all().map {
+            EventView(it.cardId, it.action, it.ts)
+        }
     }
 }
